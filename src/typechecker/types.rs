@@ -4,16 +4,22 @@ use std::fmt;
 
 pub type FunctionEnvironment<'a> = BTreeMap<String, Vec<LangType<'a>>>;
 
-#[derive(Debug, Clone, Default)]
+// Should probably change it's name to InternalType
+#[derive(Debug, Clone)]
 pub enum LangType<'a> {
     Number,
     Float,
     Boolean,
     Text,
     List,
-    #[default]
     Any,
     Application(&'a str, Vec<LangType<'a>>, Box<&'a LangType<'a>>),
+}
+
+impl Default for LangType<'_> {
+    fn default() -> Self {
+        Self::Any
+    }
 }
 
 impl Display for LangType<'_> {
