@@ -93,7 +93,7 @@ impl Typechecker<'_> {
                     }
                 }
             },
-            Err(err) => Err(err)
+            Err(err) => Err(err),
         }
     }
 }
