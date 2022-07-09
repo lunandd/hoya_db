@@ -10,7 +10,7 @@ Thorn DB is a simple in-memory key-value store database written in Rust. The dat
 
 ## Roadrap
 - [ ] Evaluator
-- [ ] Writing the db to a file
+- [ ] Writing the databases' contents to a file
 - [ ] Tests
 - [ ] Benchmarks
 - [ ] Client - server architecture
