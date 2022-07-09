@@ -1,5 +1,5 @@
 # thorn_db
-Thorn DB is a simple in-memory key-value store database written in Rust.The database can be accessed using a Lisp-like language called Wynn
+Thorn DB is a simple in-memory key-value store database written in Rust. The database can be accessed using a Lisp-like language called Wynn
 
 ## Curently Implemented
 - [x] REPL
@@ -15,4 +15,4 @@ Thorn DB is a simple in-memory key-value store database written in Rust.The data
 - [ ] Benchmarks
 - [ ] Client - server architecture
 - [ ] More complex datatypes
-[-  ] Typechecker which handles errors better
+- [ ] Typechecker which handles errors better
