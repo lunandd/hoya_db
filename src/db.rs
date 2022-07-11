@@ -14,14 +14,14 @@ type Collection = BTreeMap<String, DBTypes>;
 type Records = Arc<RwLock<Collection>>;
 
 #[derive(Debug, Clone)]
-pub struct DB {
+pub struct Database {
     records: Records,
 }
 
-unsafe impl Sync for DB {}
-unsafe impl Send for DB {}
+unsafe impl Sync for Database {}
+unsafe impl Send for Database {}
 
-impl DB {
+impl Database {
     pub fn new() -> Self {
         Self {
             records: Arc::new(RwLock::new(BTreeMap::new())),
@@ -46,7 +46,7 @@ impl DB {
     }
 }
 
-impl Default for DB {
+impl Default for Database {
     fn default() -> Self {
         Self::new()
     }

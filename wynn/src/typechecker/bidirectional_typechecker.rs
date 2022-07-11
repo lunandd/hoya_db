@@ -2,37 +2,29 @@ use crate::parser::ast::Expr;
 
 use super::env::Environment;
 use super::errors::TypeCheckerError;
-use super::types::LangType;
+use super::types::InternalType;
 
-#[derive(Debug)]
+#[derive(Debug, Default)]
 pub struct Typechecker<'a> {
     pub env: Environment<'a>,
 }
 
-impl Default for Typechecker<'_> {
-    fn default() -> Self {
-        Self::new()
-    }
-}
-
 impl Typechecker<'_> {
-    pub fn new() -> Self {
-        Typechecker {
-            env: Environment::default(),
-        }
+    pub fn new(env: Environment<'_>) -> Typechecker<'_> {
+        Typechecker { env }
     }
 
     // Let's hope I'm implementing Bidirectional typechecking correctly
-    pub fn synthesize<'a>(&'a self, ast: &'a Expr) -> Result<LangType, TypeCheckerError> {
+    pub fn synthesize<'a>(&'a self, ast: &'a Expr) -> Result<InternalType, TypeCheckerError> {
         match ast {
-            Expr::Text(_) => Ok(LangType::Text),
-            Expr::List(_) => Ok(LangType::List),
-            Expr::Float(_) => Ok(LangType::Float),
-            Expr::Number(_) => Ok(LangType::Number),
-            Expr::Boolean(_) => Ok(LangType::Boolean),
+            Expr::Text(_) => Ok(InternalType::Text),
+            Expr::List(_) => Ok(InternalType::List),
+            Expr::Float(_) => Ok(InternalType::Float),
+            Expr::Number(_) => Ok(InternalType::Number),
+            Expr::Boolean(_) => Ok(InternalType::Boolean),
             Expr::Identifier(name) => {
                 if let Some(ret) = self.env.return_type_of(name) {
-                    Ok(LangType::Application(name, vec![], Box::new(ret)))
+                    Ok(InternalType::Application(name, vec![], Box::new(ret)))
                 } else {
                     Err(TypeCheckerError::FunctionNotFound(name.into()))
                 }
@@ -43,14 +35,14 @@ impl Typechecker<'_> {
                     _ => unreachable!(),
                 };
                 if let Some(ret) = self.env.return_type_of(str_name) {
-                    Ok(LangType::Application(
+                    Ok(InternalType::Application(
                         str_name,
                         args.iter()
                             // TODO: Check if synthesized results are Ok
                             // i.e when ```put a "a"``` is executed on the default Environment it
                             // fails because a is not defined and it's value is
                             // FunctionNotFound("a")
-                            // Basically return a Vec<Result<LangType, TypeCheckerError>>
+                            // Basically return a Vec<Result<InternalType, TypeCheckerError>>
                             .map(|e| self.synthesize(e).unwrap())
                             .collect::<Vec<_>>(),
                         Box::new(ret),
@@ -64,13 +56,13 @@ impl Typechecker<'_> {
 
     pub fn check<'a>(
         &'a self,
-        expected: &'a LangType,
+        expected: &'a InternalType,
         ast: &'a Expr,
     ) -> Result<(), TypeCheckerError> {
         let synthesized = self.synthesize(ast);
         match synthesized {
             Ok(internal_type) => match internal_type {
-                LangType::Application(name, ref arg_types, _) => {
+                InternalType::Application(name, ref arg_types, _) => {
                     let expected = self.env.param_types_of(name);
 
                     if expected == *arg_types {

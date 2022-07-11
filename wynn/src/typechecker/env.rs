@@ -1,4 +1,4 @@
-use super::types::{FunctionEnvironment, LangType};
+use super::types::{FunctionEnvironment, InternalType};
 use std::collections::BTreeMap;
 
 #[derive(Debug)]
@@ -15,14 +15,14 @@ impl Environment<'_> {
         self.env.contains_key(name)
     }
 
-    pub fn return_type_of(&self, name: &str) -> Option<&LangType> {
+    pub fn return_type_of(&self, name: &str) -> Option<&InternalType> {
         match self.env.get(name) {
             Some(types) => Some(types.last().unwrap()),
             None => None,
         }
     }
 
-    pub fn param_types_of(&self, name: &str) -> Vec<LangType> {
+    pub fn param_types_of(&self, name: &str) -> Vec<InternalType> {
         match self.env.get(name) {
             Some(types) => {
                 if types.len() == 1 {
@@ -35,9 +35,9 @@ impl Environment<'_> {
         }
     }
 
-    pub fn function_type_of<'a>(&'a self, name: &'a str) -> Option<LangType> {
+    pub fn function_type_of<'a>(&'a self, name: &'a str) -> Option<InternalType> {
         match (self.param_types_of(name), self.return_type_of(name)) {
-            (t, Some(r)) => Some(LangType::Application(name, t, Box::new(r))),
+            (t, Some(r)) => Some(InternalType::Application(name, t, Box::new(r))),
             _ => None,
         }
     }
@@ -48,12 +48,17 @@ impl Default for Environment<'_> {
         let default_env = BTreeMap::from([
             (
                 "put".into(),
-                vec![LangType::Any, LangType::Text, LangType::Any],
+                vec![InternalType::Any, InternalType::Text, InternalType::Any],
             ),
-            ("get".into(), vec![LangType::Text, LangType::Any]),
-            ("exists".into(), vec![LangType::Text, LangType::Boolean]),
-            ("remove".into(), vec![LangType::Text, LangType::Any]),
-            ("store".into(), vec![LangType::Text, LangType::Any]),
+            ("get".into(), vec![InternalType::Text, InternalType::Any]),
+            (
+                "exists".into(),
+                vec![InternalType::Text, InternalType::Boolean],
+            ),
+            ("remove".into(), vec![InternalType::Text, InternalType::Any]),
+            // Stores database to file
+            ("store".into(), vec![InternalType::Text, InternalType::Unit]),
+            ("print".into(), vec![InternalType::Text, InternalType::Unit]),
         ]);
 
         Environment { env: default_env }

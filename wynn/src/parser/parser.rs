@@ -102,6 +102,21 @@ where
     many1(letter().or(digit())).map(Expr::Identifier)
 }
 
+// Syntactic sugar
+fn atom<Input>() -> impl Parser<Input, Output = Expr>
+where
+    Input: Stream<Token = char>,
+    Input::Error: ParseError<Input::Token, Input::Range, Input::Position>,
+{
+    (lex_char('\''), name()).map(|(_, at)| {
+        if let Expr::Identifier(iden) = at {
+            Expr::Text(iden.to_uppercase())
+        } else {
+            unreachable!()
+        }
+    })
+}
+
 fn identifier<Input>() -> impl Parser<Input, Output = Expr>
 where
     Input: Stream<Token = char>,
@@ -148,6 +163,6 @@ parser! {
     pub fn expr[Input]()(Input) -> Expr
     where [Input: Stream<Token = char>]
     {
-        choice!(attempt(bool()), attempt(float()),attempt(int()), attempt(text()), attempt(list()), attempt(call()), attempt(identifier()))
+        choice!(attempt(bool()), attempt(float()), attempt(int()), attempt(text()), attempt(list()), attempt(call()), attempt(atom()), attempt(identifier()))
     }
 }

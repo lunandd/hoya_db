@@ -2,23 +2,24 @@ use ariadne::{Label, Report, ReportKind, Source};
 use combine::ParseError;
 use rustyline::error::ReadlineError;
 use rustyline::{Editor, Result};
-use thorn::parser::parser::parse;
-use thorn::typechecker::checker::Typechecker;
+use wynn::parser::parser::parse;
+use wynn::typechecker::bidirectional_typechecker::Typechecker;
+use wynn::typechecker::types::InternalType;
 
 fn main() -> Result<()> {
     let mut rl = Editor::<()>::new();
+    rl.load_history("history.txt")?;
     loop {
         let readline = rl.readline(">> ");
 
         match readline {
             Ok(line) => {
-                let typechecker = Typechecker::new();
+                let typechecker = Typechecker::default();
                 rl.add_history_entry(line.as_str());
                 let parser_result = &parse(&line).map(|x| x.0);
 
                 if let Ok(parsed) = parser_result {
-                    let checked =
-                        typechecker.check(&thorn::typechecker::types::LangType::Any, parsed);
+                    let checked = typechecker.check(&InternalType::Any, parsed);
 
                     println!("{parsed:?}");
 

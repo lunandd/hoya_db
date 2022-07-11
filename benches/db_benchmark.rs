@@ -2,10 +2,10 @@ use criterion::{black_box, criterion_group, criterion_main, Criterion};
 use rayon::prelude::*;
 use std::sync::RwLock;
 use std::time::Instant;
-use thorn::db::db::{DBTypes, DB};
+use thorn::db::{DBTypes, Database};
 
 pub fn db_benchmark(c: &mut Criterion) {
-    let db = RwLock::new(DB::new());
+    let db = RwLock::new(Database::new());
 
     c.bench_function("put", |b| {
         b.iter_custom(|iters| {

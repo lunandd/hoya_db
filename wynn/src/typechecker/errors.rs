@@ -1,6 +1,6 @@
 use thiserror::Error;
 
-use super::types::LangType;
+use super::types::InternalType;
 
 #[derive(Error, Debug)]
 pub enum TypeCheckerError<'a> {
@@ -8,13 +8,13 @@ pub enum TypeCheckerError<'a> {
     FunctionNotFound(String),
     #[error("Expected type {expected}, but found {found}")]
     InvalidTypeFound {
-        expected: LangType<'a>,
-        found: LangType<'a>,
+        expected: InternalType<'a>,
+        found: InternalType<'a>,
     },
     #[error("Expected types {expected:?}, but found {found:?}")]
     InvalidTypesFound {
-        expected: Vec<LangType<'a>>,
-        found: Vec<LangType<'a>>,
+        expected: Vec<InternalType<'a>>,
+        found: Vec<InternalType<'a>>,
     },
 }
 
@@ -24,13 +24,13 @@ pub enum ShortTypeCheckerError<'a> {
     FunctionNotFound(String),
     #[error("Invalid Type `{found}` Found")]
     InvalidTypeFound {
-        expected: LangType<'a>,
-        found: LangType<'a>,
+        expected: InternalType<'a>,
+        found: InternalType<'a>,
     },
     #[error("Invalid Types Found")]
     InvalidTypesFound {
-        expected: Vec<LangType<'a>>,
-        found: Vec<LangType<'a>>,
+        expected: Vec<InternalType<'a>>,
+        found: Vec<InternalType<'a>>,
     },
 }
 
