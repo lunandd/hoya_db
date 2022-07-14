@@ -39,11 +39,6 @@ impl Typechecker<'_> {
                     Ok(InternalType::Application(
                         str_name,
                         args.iter()
-                            /* TODO: Check if synthesized results are Ok
-                            i.e when ```put a "a"``` is executed on the default Environment it
-                            fails because a is not defined and it's value is
-                            FunctionNotFound("a")
-                            Basically return a Vec<Result<InternalType, TypeCheckerError>> */
                             .map(|e| self.synthesize(e).unwrap())
                             .collect::<Vec<_>>(),
                         Box::new(ret),
