@@ -36,6 +36,10 @@ impl Typechecker<'_> {
                     _ => unreachable!(),
                 };
                 if let Some(ret) = self.env.return_type_of(str_name) {
+                    /* TODO: Check if synthesized results are Ok
+                       i.e when ```put a "a"``` is executed on the default Environment it
+                       fails because a is not defined and it's value is FunctionNotFound("a").
+                       Basically return a Vec<Result<InternalType, TypeCheckerError>> */
                     Ok(InternalType::Application(
                         str_name,
                         args.iter()
