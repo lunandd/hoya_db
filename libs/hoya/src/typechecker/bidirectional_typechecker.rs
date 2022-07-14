@@ -39,7 +39,7 @@ impl Typechecker<'_> {
                     Ok(InternalType::Application(
                         str_name,
                         args.iter()
-                            // TODO: Check if synthesized results are Ok
+                            // TODO Check if synthesized results are Ok
                             // i.e when ```put a "a"``` is executed on the default Environment it
                             // fails because a is not defined and it's value is
                             // FunctionNotFound("a")
