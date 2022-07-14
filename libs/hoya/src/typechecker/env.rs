@@ -33,6 +33,8 @@ pub(crate) fn builtins<'a>() -> [(String, Vec<InternalType<'a>>); 7] {
         ),
     ]
 }
+
+// TODO: Storing and retrieving functions from an `Environment`
 #[derive(Debug)]
 pub struct Environment<'a> {
     env: FunctionEnvironment<'a>,

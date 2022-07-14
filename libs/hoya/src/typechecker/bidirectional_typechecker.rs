@@ -14,7 +14,6 @@ impl Typechecker<'_> {
         Typechecker { env }
     }
 
-    // Let's hope I'm implementing Bidirectional typechecking correctly
     pub fn synthesize<'a>(&'a self, ast: &'a Expr) -> Result<InternalType, TypeCheckerError> {
         match ast {
             Expr::Text(_) => Ok(InternalType::Text),
@@ -37,9 +36,9 @@ impl Typechecker<'_> {
                 };
                 if let Some(ret) = self.env.return_type_of(str_name) {
                     /* TODO: Check if synthesized results are Ok
-                       i.e when ```put a "a"``` is executed on the default Environment it
-                       fails because a is not defined and it's value is FunctionNotFound("a").
-                       Basically return a Vec<Result<InternalType, TypeCheckerError>> */
+                    i.e when ```(put a "a")``` is executed on the default Environment
+                    it fails because a is not defined. Basically return
+                    a ```Vector``` instead of just a ```Result```*/
                     Ok(InternalType::Application(
                         str_name,
                         args.iter()

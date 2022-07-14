@@ -9,3 +9,5 @@ pub enum Expr {
     Call(Box<Expr>, Vec<Expr>),
     Unit(()),
 }
+
+// TODO: Function definitions, if statements, variable arguments, quoting, comments

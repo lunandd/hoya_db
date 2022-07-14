@@ -29,7 +29,6 @@ impl Database {
         }
     }
 
-    // TODO: Not use Option.cloned(), if that's even possible
     pub fn get(&self, key: &str) -> Option<DBTypes> {
         self.records.read().unwrap().get(key).cloned()
     }
@@ -44,6 +43,16 @@ impl Database {
 
     pub fn exists(&self, key: &str) -> bool {
         self.records.read().unwrap().contains_key(key)
+    }
+
+    // TODO: Storing the database in a file
+    pub fn store(&self, _filename: &str) {
+        todo!()
+    }
+
+    // TODO: Loading the database from a file
+    pub fn load(&self, _filename: &str) {
+        todo!()
     }
 }
 
