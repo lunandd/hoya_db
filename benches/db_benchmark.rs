@@ -1,8 +1,8 @@
 use criterion::{black_box, criterion_group, criterion_main, Criterion};
+use db::{DBTypes, Database};
 use rayon::prelude::*;
 use std::sync::RwLock;
 use std::time::Instant;
-use thorn::db::{DBTypes, Database};
 
 pub fn db_benchmark(c: &mut Criterion) {
     let db = RwLock::new(Database::new());
@@ -20,6 +20,8 @@ pub fn db_benchmark(c: &mut Criterion) {
         })
     });
 
+    println!("{:?}", db);
+
     c.bench_function("remove", |b| {
         b.iter_custom(|iters| {
             let start = Instant::now();
@@ -29,6 +31,8 @@ pub fn db_benchmark(c: &mut Criterion) {
             start.elapsed()
         })
     });
+
+    println!("{:?}", db);
 
     c.bench_function("get", |b| {
         b.iter_custom(|iters| {
@@ -40,6 +44,8 @@ pub fn db_benchmark(c: &mut Criterion) {
         })
     });
 
+    println!("{:?}", db);
+
     c.bench_function("exists", |b| {
         b.iter_custom(|iters| {
             let start = Instant::now();
@@ -49,6 +55,8 @@ pub fn db_benchmark(c: &mut Criterion) {
             start.elapsed()
         })
     });
+
+    println!("{:?}", db);
 }
 
 criterion_group!(benches, db_benchmark);

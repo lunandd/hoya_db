@@ -1,4 +1,4 @@
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub enum Expr {
     Number(isize),
     Float(f64),
@@ -7,4 +7,5 @@ pub enum Expr {
     List(Vec<Expr>),
     Identifier(String),
     Call(Box<Expr>, Vec<Expr>),
+    Unit(()),
 }

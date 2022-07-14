@@ -4,7 +4,6 @@ use std::fmt;
 
 pub(crate) type FunctionEnvironment<'a> = BTreeMap<String, Vec<InternalType<'a>>>;
 
-// Should probably change it's name to InternalType
 #[derive(Debug, Clone)]
 pub enum InternalType<'a> {
     Number,

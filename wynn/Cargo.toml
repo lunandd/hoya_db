@@ -1,9 +1,0 @@
-[package]
-name = "wynn"
-version = "0.1.0"
-edition = "2021"
-
-[dependencies]
-thiserror = "1.0.31"
-ariadne = "0.1.5"
-combine = "4.6.4"

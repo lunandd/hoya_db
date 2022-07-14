@@ -1,6 +1,6 @@
 [package]
 version = "0.1.0"
-name = "thorn"
+name = "hoya_db"
 authors = ["lunand"]
 edition = "2021"
 
@@ -10,17 +10,11 @@ edition = "2021"
 criterion = "0.3.5"
 rayon = "1.5.3"
 rustyline = "9.1.2"
-
-# TODO: Move crates below to the wynn crate
-ariadne = "0.1.5"
-combine = "4.6.4"
-
-wynn = { path = "./wynn" }
+hoya = { path = "./libs/hoya" }
+db = { path = "./libs/db" }
 
 [workspace]
-members = [
-    "wynn"
-]
+members = ["libs/*"]
 
 [[bench]]
 name = "db_benchmark"

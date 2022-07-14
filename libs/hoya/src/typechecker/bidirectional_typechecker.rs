@@ -22,6 +22,7 @@ impl Typechecker<'_> {
             Expr::Float(_) => Ok(InternalType::Float),
             Expr::Number(_) => Ok(InternalType::Number),
             Expr::Boolean(_) => Ok(InternalType::Boolean),
+            Expr::Unit(_) => Ok(InternalType::Unit),
             Expr::Identifier(name) => {
                 if let Some(ret) = self.env.return_type_of(name) {
                     Ok(InternalType::Application(name, vec![], Box::new(ret)))

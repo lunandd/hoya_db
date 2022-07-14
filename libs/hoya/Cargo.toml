@@ -1,0 +1,17 @@
+[package]
+name = "hoya"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+combine = "4.6.4"
+thiserror = "1.0.31"
+ariadne = "0.1.5"
+rayon = "1.5.3"
+db = { path = "../db" }
+
+[lib]
+name = "hoya"
+path = "src/lib.rs"

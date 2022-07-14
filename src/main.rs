@@ -1,65 +1,18 @@
-use ariadne::{Label, Report, ReportKind, Source};
-use combine::ParseError;
+use hoya::interpreter::interpret::Interpreter;
 use rustyline::error::ReadlineError;
 use rustyline::{Editor, Result};
-use wynn::parser::parser::parse;
-use wynn::typechecker::bidirectional_typechecker::Typechecker;
-use wynn::typechecker::types::InternalType;
 
 fn main() -> Result<()> {
     let mut rl = Editor::<()>::new();
     rl.load_history("history.txt")?;
+
+    let interpreter = Interpreter::default();
+
     loop {
         let readline = rl.readline(">> ");
 
         match readline {
-            Ok(line) => {
-                let typechecker = Typechecker::default();
-                rl.add_history_entry(line.as_str());
-                let parser_result = &parse(&line).map(|x| x.0);
-
-                if let Ok(parsed) = parser_result {
-                    let checked = typechecker.check(&InternalType::Any, parsed);
-
-                    println!("{parsed:?}");
-
-                    match checked {
-                        Ok(_) => println!("Typechecking passed"),
-                        Err(ref e) => {
-                            Report::build(ReportKind::Error, (), 0)
-                                .with_message(e.to_short_error().to_string())
-                                .with_label(Label::new(0..1))
-                                .with_label(Label::new(0..1).with_message(format!("{e}")))
-                                .finish()
-                                .print(Source::from(&line))
-                                .unwrap();
-                        }
-                    }
-                } else {
-                    let err = match parser_result {
-                        Err(e) => e,
-                        _ => unreachable!(),
-                    };
-                    Report::build(ReportKind::Error, (), 0)
-                        .with_message({
-                            let err_vec = format!("{}", err)
-                                .split('\n')
-                                .map(|s| s.to_string())
-                                .skip(1)
-                                .collect::<Vec<String>>();
-                            err_vec[0].to_owned() + "\n" + &err_vec[1]
-                        })
-                        .with_label(
-                            Label::new(
-                                err.position().line as usize..err.position().column as usize,
-                            )
-                            .with_message(err.errors.first().unwrap()),
-                        )
-                        .finish()
-                        .print(Source::from(&line))
-                        .unwrap();
-                }
-            }
+            Ok(line) => interpreter.interpret(&line),
             Err(ReadlineError::Interrupted) => {
                 println!("^C");
                 break;

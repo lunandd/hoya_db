@@ -8,6 +8,7 @@ pub enum DBTypes {
     Boolean(bool),
     Text(String),
     List(Vec<DBTypes>),
+    Unit(()),
 }
 
 type Collection = BTreeMap<String, DBTypes>;
@@ -24,7 +25,7 @@ unsafe impl Send for Database {}
 impl Database {
     pub fn new() -> Self {
         Self {
-            records: Arc::new(RwLock::new(BTreeMap::new())),
+            records: Arc::new(RwLock::new(Collection::new())),
         }
     }
 
@@ -33,11 +34,11 @@ impl Database {
         self.records.read().unwrap().get(key).cloned()
     }
 
-    pub fn put(&mut self, key: String, value: DBTypes) -> Option<DBTypes> {
+    pub fn put(&self, key: String, value: DBTypes) -> Option<DBTypes> {
         self.records.write().unwrap().insert(key, value)
     }
 
-    pub fn remove(&mut self, key: &str) -> Option<DBTypes> {
+    pub fn remove(&self, key: &str) -> Option<DBTypes> {
         self.records.write().unwrap().remove(key)
     }
 
