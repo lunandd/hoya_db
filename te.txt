@@ -1,0 +1,620 @@
+    Checking db v0.1.0 (/home/void/hoya_db/libs/db)
+error: `mod.rs` files are required, found `libs/db/src/db.rs`
+ --> libs/db/src/db.rs:1:1
+  |
+1 | use std::collections::BTreeMap;
+  | ^
+  |
+  = note: `-D clippy::self-named-module-files` implied by `-D warnings`
+  = help: move `libs/db/src/db.rs` to `libs/db/src/db/mod.rs`
+
+error: using `pub use`
+ --> libs/db/src/lib.rs:2:1
+  |
+2 | pub use db::*;
+  | ^^^^^^^^^^^^^^
+  |
+  = note: `-D clippy::pub-use` implied by `-D warnings`
+  = help: move the exported item to a public module instead
+  = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#pub_use
+
+error: missing documentation for the crate
+ --> libs/db/src/lib.rs:1:1
+  |
+1 | / mod db;
+2 | | pub use db::*;
+  | |______________^
+  |
+  = note: `-D clippy::missing-docs-in-private-items` implied by `-D warnings`
+  = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#missing_docs_in_private_items
+
+error: missing documentation for a module
+ --> libs/db/src/lib.rs:1:1
+  |
+1 | mod db;
+  | ^^^^^^^
+  |
+  = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#missing_docs_in_private_items
+
+error: missing documentation for an enum
+  --> libs/db/src/db.rs:5:1
+   |
+5  | / pub enum DBTypes {
+6  | |     Number(isize),
+7  | |     Float(f64),
+8  | |     Boolean(bool),
+...  |
+11 | |     Unit(()),
+12 | | }
+   | |_^
+   |
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#missing_docs_in_private_items
+
+error: exported enums should not be exhaustive
+  --> libs/db/src/db.rs:5:1
+   |
+5  | / pub enum DBTypes {
+6  | |     Number(isize),
+7  | |     Float(f64),
+8  | |     Boolean(bool),
+...  |
+11 | |     Unit(()),
+12 | | }
+   | |_^
+   |
+   = note: `-D clippy::exhaustive-enums` implied by `-D warnings`
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#exhaustive_enums
+help: try adding #[non_exhaustive]
+   |
+5  | #[non_exhaustive]
+   |
+
+error: missing documentation for a variant
+ --> libs/db/src/db.rs:6:5
+  |
+6 |     Number(isize),
+  |     ^^^^^^^^^^^^^
+  |
+  = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#missing_docs_in_private_items
+
+error: missing documentation for a variant
+ --> libs/db/src/db.rs:7:5
+  |
+7 |     Float(f64),
+  |     ^^^^^^^^^^
+  |
+  = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#missing_docs_in_private_items
+
+error: missing documentation for a variant
+ --> libs/db/src/db.rs:8:5
+  |
+8 |     Boolean(bool),
+  |     ^^^^^^^^^^^^^
+  |
+  = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#missing_docs_in_private_items
+
+error: missing documentation for a variant
+ --> libs/db/src/db.rs:9:5
+  |
+9 |     Text(String),
+  |     ^^^^^^^^^^^^
+  |
+  = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#missing_docs_in_private_items
+
+error: missing documentation for a variant
+  --> libs/db/src/db.rs:10:5
+   |
+10 |     List(Vec<DBTypes>),
+   |     ^^^^^^^^^^^^^^^^^^
+   |
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#missing_docs_in_private_items
+
+error: missing documentation for a variant
+  --> libs/db/src/db.rs:11:5
+   |
+11 |     Unit(()),
+   |     ^^^^^^^^
+   |
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#missing_docs_in_private_items
+
+error: missing documentation for a type alias
+  --> libs/db/src/db.rs:14:1
+   |
+14 | type Collection = BTreeMap<String, DBTypes>;
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#missing_docs_in_private_items
+
+error: missing documentation for a type alias
+  --> libs/db/src/db.rs:15:1
+   |
+15 | type Records = Arc<RwLock<Collection>>;
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#missing_docs_in_private_items
+
+error: missing documentation for a struct
+  --> libs/db/src/db.rs:18:1
+   |
+18 | / pub struct Database {
+19 | |     records: Records,
+20 | | }
+   | |_^
+   |
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#missing_docs_in_private_items
+
+error: missing documentation for a struct field
+  --> libs/db/src/db.rs:19:5
+   |
+19 |     records: Records,
+   |     ^^^^^^^^^^^^^^^^
+   |
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#missing_docs_in_private_items
+
+error: this method could have a `#[must_use]` attribute
+  --> libs/db/src/db.rs:26:5
+   |
+26 |     pub fn new() -> Self {
+   |     ^^^^^^^^^^^^^^^^^^^^ help: add the attribute: `#[must_use] pub fn new() -> Self`
+   |
+   = note: `-D clippy::must-use-candidate` implied by `-D warnings`
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#must_use_candidate
+
+error: missing documentation for an associated function
+  --> libs/db/src/db.rs:26:5
+   |
+26 | /     pub fn new() -> Self {
+27 | |         Self {
+28 | |             records: Arc::new(RwLock::new(Collection::new())),
+29 | |         }
+30 | |     }
+   | |_____^
+   |
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#missing_docs_in_private_items
+
+error: missing `#[inline]` for a method
+  --> libs/db/src/db.rs:26:5
+   |
+26 | /     pub fn new() -> Self {
+27 | |         Self {
+28 | |             records: Arc::new(RwLock::new(Collection::new())),
+29 | |         }
+30 | |     }
+   | |_____^
+   |
+   = note: `-D clippy::missing-inline-in-public-items` implied by `-D warnings`
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#missing_inline_in_public_items
+
+error: missing `return` statement
+  --> libs/db/src/db.rs:27:9
+   |
+27 | /         Self {
+28 | |             records: Arc::new(RwLock::new(Collection::new())),
+29 | |         }
+   | |_________^
+   |
+   = note: `-D clippy::implicit-return` implied by `-D warnings`
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#implicit_return
+help: add `return` as shown
+   |
+27 ~         return Self {
+28 +             records: Arc::new(RwLock::new(Collection::new())),
+29 +         }
+   |
+
+error: this method could have a `#[must_use]` attribute
+  --> libs/db/src/db.rs:32:5
+   |
+32 |     pub fn get(&self, key: &str) -> Option<DBTypes> {
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ help: add the attribute: `#[must_use] pub fn get(&self, key: &str) -> Option<DBTypes>`
+   |
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#must_use_candidate
+
+error: docs for function which may panic missing `# Panics` section
+  --> libs/db/src/db.rs:32:5
+   |
+32 | /     pub fn get(&self, key: &str) -> Option<DBTypes> {
+33 | |         self.records.read().unwrap().get(key).cloned()
+34 | |     }
+   | |_____^
+   |
+   = note: `-D clippy::missing-panics-doc` implied by `-D warnings`
+note: first possible panic found here
+  --> libs/db/src/db.rs:33:9
+   |
+33 |         self.records.read().unwrap().get(key).cloned()
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#missing_panics_doc
+
+error: missing documentation for an associated function
+  --> libs/db/src/db.rs:32:5
+   |
+32 | /     pub fn get(&self, key: &str) -> Option<DBTypes> {
+33 | |         self.records.read().unwrap().get(key).cloned()
+34 | |     }
+   | |_____^
+   |
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#missing_docs_in_private_items
+
+error: missing `#[inline]` for a method
+  --> libs/db/src/db.rs:32:5
+   |
+32 | /     pub fn get(&self, key: &str) -> Option<DBTypes> {
+33 | |         self.records.read().unwrap().get(key).cloned()
+34 | |     }
+   | |_____^
+   |
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#missing_inline_in_public_items
+
+error: used unwrap or expect in a function that returns result or option
+  --> libs/db/src/db.rs:32:5
+   |
+32 | /     pub fn get(&self, key: &str) -> Option<DBTypes> {
+33 | |         self.records.read().unwrap().get(key).cloned()
+34 | |     }
+   | |_____^
+   |
+   = note: `-D clippy::unwrap-in-result` implied by `-D warnings`
+   = help: unwrap and expect should not be used in a function that returns result or option
+note: potential non-recoverable error(s)
+  --> libs/db/src/db.rs:33:9
+   |
+33 |         self.records.read().unwrap().get(key).cloned()
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#unwrap_in_result
+
+error: missing `return` statement
+  --> libs/db/src/db.rs:33:9
+   |
+33 |         self.records.read().unwrap().get(key).cloned()
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ help: add `return` as shown: `return self.records.read().unwrap().get(key).cloned()`
+   |
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#implicit_return
+
+error: used `unwrap()` on `a Result` value
+  --> libs/db/src/db.rs:33:9
+   |
+33 |         self.records.read().unwrap().get(key).cloned()
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `-D clippy::unwrap-used` implied by `-D warnings`
+   = help: if you don't want to handle the `Err` case gracefully, consider using `expect()` to provide a better panic message
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#unwrap_used
+
+error: this method could have a `#[must_use]` attribute
+  --> libs/db/src/db.rs:36:5
+   |
+36 |     pub fn put(&self, key: String, value: DBTypes) -> Option<DBTypes> {
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ help: add the attribute: `#[must_use] pub fn put(&self, key: String, value: DBTypes) -> Option<DBTypes>`
+   |
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#must_use_candidate
+
+error: docs for function which may panic missing `# Panics` section
+  --> libs/db/src/db.rs:36:5
+   |
+36 | /     pub fn put(&self, key: String, value: DBTypes) -> Option<DBTypes> {
+37 | |         self.records.write().unwrap().insert(key, value)
+38 | |     }
+   | |_____^
+   |
+note: first possible panic found here
+  --> libs/db/src/db.rs:37:9
+   |
+37 |         self.records.write().unwrap().insert(key, value)
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#missing_panics_doc
+
+error: missing documentation for an associated function
+  --> libs/db/src/db.rs:36:5
+   |
+36 | /     pub fn put(&self, key: String, value: DBTypes) -> Option<DBTypes> {
+37 | |         self.records.write().unwrap().insert(key, value)
+38 | |     }
+   | |_____^
+   |
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#missing_docs_in_private_items
+
+error: missing `#[inline]` for a method
+  --> libs/db/src/db.rs:36:5
+   |
+36 | /     pub fn put(&self, key: String, value: DBTypes) -> Option<DBTypes> {
+37 | |         self.records.write().unwrap().insert(key, value)
+38 | |     }
+   | |_____^
+   |
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#missing_inline_in_public_items
+
+error: used unwrap or expect in a function that returns result or option
+  --> libs/db/src/db.rs:36:5
+   |
+36 | /     pub fn put(&self, key: String, value: DBTypes) -> Option<DBTypes> {
+37 | |         self.records.write().unwrap().insert(key, value)
+38 | |     }
+   | |_____^
+   |
+   = help: unwrap and expect should not be used in a function that returns result or option
+note: potential non-recoverable error(s)
+  --> libs/db/src/db.rs:37:9
+   |
+37 |         self.records.write().unwrap().insert(key, value)
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#unwrap_in_result
+
+error: missing `return` statement
+  --> libs/db/src/db.rs:37:9
+   |
+37 |         self.records.write().unwrap().insert(key, value)
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ help: add `return` as shown: `return self.records.write().unwrap().insert(key, value)`
+   |
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#implicit_return
+
+error: used `unwrap()` on `a Result` value
+  --> libs/db/src/db.rs:37:9
+   |
+37 |         self.records.write().unwrap().insert(key, value)
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = help: if you don't want to handle the `Err` case gracefully, consider using `expect()` to provide a better panic message
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#unwrap_used
+
+error: this method could have a `#[must_use]` attribute
+  --> libs/db/src/db.rs:40:5
+   |
+40 |     pub fn remove(&self, key: &str) -> Option<DBTypes> {
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ help: add the attribute: `#[must_use] pub fn remove(&self, key: &str) -> Option<DBTypes>`
+   |
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#must_use_candidate
+
+error: docs for function which may panic missing `# Panics` section
+  --> libs/db/src/db.rs:40:5
+   |
+40 | /     pub fn remove(&self, key: &str) -> Option<DBTypes> {
+41 | |         self.records.write().unwrap().remove(key)
+42 | |     }
+   | |_____^
+   |
+note: first possible panic found here
+  --> libs/db/src/db.rs:41:9
+   |
+41 |         self.records.write().unwrap().remove(key)
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#missing_panics_doc
+
+error: missing documentation for an associated function
+  --> libs/db/src/db.rs:40:5
+   |
+40 | /     pub fn remove(&self, key: &str) -> Option<DBTypes> {
+41 | |         self.records.write().unwrap().remove(key)
+42 | |     }
+   | |_____^
+   |
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#missing_docs_in_private_items
+
+error: missing `#[inline]` for a method
+  --> libs/db/src/db.rs:40:5
+   |
+40 | /     pub fn remove(&self, key: &str) -> Option<DBTypes> {
+41 | |         self.records.write().unwrap().remove(key)
+42 | |     }
+   | |_____^
+   |
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#missing_inline_in_public_items
+
+error: used unwrap or expect in a function that returns result or option
+  --> libs/db/src/db.rs:40:5
+   |
+40 | /     pub fn remove(&self, key: &str) -> Option<DBTypes> {
+41 | |         self.records.write().unwrap().remove(key)
+42 | |     }
+   | |_____^
+   |
+   = help: unwrap and expect should not be used in a function that returns result or option
+note: potential non-recoverable error(s)
+  --> libs/db/src/db.rs:41:9
+   |
+41 |         self.records.write().unwrap().remove(key)
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#unwrap_in_result
+
+error: missing `return` statement
+  --> libs/db/src/db.rs:41:9
+   |
+41 |         self.records.write().unwrap().remove(key)
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ help: add `return` as shown: `return self.records.write().unwrap().remove(key)`
+   |
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#implicit_return
+
+error: used `unwrap()` on `a Result` value
+  --> libs/db/src/db.rs:41:9
+   |
+41 |         self.records.write().unwrap().remove(key)
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = help: if you don't want to handle the `Err` case gracefully, consider using `expect()` to provide a better panic message
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#unwrap_used
+
+error: this method could have a `#[must_use]` attribute
+  --> libs/db/src/db.rs:44:5
+   |
+44 |     pub fn exists(&self, key: &str) -> bool {
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ help: add the attribute: `#[must_use] pub fn exists(&self, key: &str) -> bool`
+   |
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#must_use_candidate
+
+error: docs for function which may panic missing `# Panics` section
+  --> libs/db/src/db.rs:44:5
+   |
+44 | /     pub fn exists(&self, key: &str) -> bool {
+45 | |         self.records.read().unwrap().contains_key(key)
+46 | |     }
+   | |_____^
+   |
+note: first possible panic found here
+  --> libs/db/src/db.rs:45:9
+   |
+45 |         self.records.read().unwrap().contains_key(key)
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#missing_panics_doc
+
+error: missing documentation for an associated function
+  --> libs/db/src/db.rs:44:5
+   |
+44 | /     pub fn exists(&self, key: &str) -> bool {
+45 | |         self.records.read().unwrap().contains_key(key)
+46 | |     }
+   | |_____^
+   |
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#missing_docs_in_private_items
+
+error: missing `#[inline]` for a method
+  --> libs/db/src/db.rs:44:5
+   |
+44 | /     pub fn exists(&self, key: &str) -> bool {
+45 | |         self.records.read().unwrap().contains_key(key)
+46 | |     }
+   | |_____^
+   |
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#missing_inline_in_public_items
+
+error: missing `return` statement
+  --> libs/db/src/db.rs:45:9
+   |
+45 |         self.records.read().unwrap().contains_key(key)
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ help: add `return` as shown: `return self.records.read().unwrap().contains_key(key)`
+   |
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#implicit_return
+
+error: used `unwrap()` on `a Result` value
+  --> libs/db/src/db.rs:45:9
+   |
+45 |         self.records.read().unwrap().contains_key(key)
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = help: if you don't want to handle the `Err` case gracefully, consider using `expect()` to provide a better panic message
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#unwrap_used
+
+error: docs for function which may panic missing `# Panics` section
+  --> libs/db/src/db.rs:49:5
+   |
+49 | /     pub fn store(&self, _filename: &str) {
+50 | |         todo!()
+51 | |     }
+   | |_____^
+   |
+note: first possible panic found here
+  --> libs/db/src/db.rs:50:9
+   |
+50 |         todo!()
+   |         ^^^^^^^
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#missing_panics_doc
+
+error: missing documentation for an associated function
+  --> libs/db/src/db.rs:49:5
+   |
+49 | /     pub fn store(&self, _filename: &str) {
+50 | |         todo!()
+51 | |     }
+   | |_____^
+   |
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#missing_docs_in_private_items
+
+error: missing `#[inline]` for a method
+  --> libs/db/src/db.rs:49:5
+   |
+49 | /     pub fn store(&self, _filename: &str) {
+50 | |         todo!()
+51 | |     }
+   | |_____^
+   |
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#missing_inline_in_public_items
+
+error: unused `self` argument
+  --> libs/db/src/db.rs:49:18
+   |
+49 |     pub fn store(&self, _filename: &str) {
+   |                  ^^^^^
+   |
+   = note: `-D clippy::unused-self` implied by `-D warnings`
+   = help: consider refactoring to a associated function
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#unused_self
+
+error: `todo` should not be present in production code
+  --> libs/db/src/db.rs:50:9
+   |
+50 |         todo!()
+   |         ^^^^^^^
+   |
+   = note: `-D clippy::todo` implied by `-D warnings`
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#todo
+
+error: docs for function which may panic missing `# Panics` section
+  --> libs/db/src/db.rs:54:5
+   |
+54 | /     pub fn load(&self, _filename: &str) {
+55 | |         todo!()
+56 | |     }
+   | |_____^
+   |
+note: first possible panic found here
+  --> libs/db/src/db.rs:55:9
+   |
+55 |         todo!()
+   |         ^^^^^^^
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#missing_panics_doc
+
+error: missing documentation for an associated function
+  --> libs/db/src/db.rs:54:5
+   |
+54 | /     pub fn load(&self, _filename: &str) {
+55 | |         todo!()
+56 | |     }
+   | |_____^
+   |
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#missing_docs_in_private_items
+
+error: missing `#[inline]` for a method
+  --> libs/db/src/db.rs:54:5
+   |
+54 | /     pub fn load(&self, _filename: &str) {
+55 | |         todo!()
+56 | |     }
+   | |_____^
+   |
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#missing_inline_in_public_items
+
+error: unused `self` argument
+  --> libs/db/src/db.rs:54:17
+   |
+54 |     pub fn load(&self, _filename: &str) {
+   |                 ^^^^^
+   |
+   = help: consider refactoring to a associated function
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#unused_self
+
+error: `todo` should not be present in production code
+  --> libs/db/src/db.rs:55:9
+   |
+55 |         todo!()
+   |         ^^^^^^^
+   |
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#todo
+
+error: missing `#[inline]` for a method
+  --> libs/db/src/db.rs:60:5
+   |
+60 | /     fn default() -> Self {
+61 | |         Self::new()
+62 | |     }
+   | |_____^
+   |
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#missing_inline_in_public_items
+
+error: missing `return` statement
+  --> libs/db/src/db.rs:61:9
+   |
+61 |         Self::new()
+   |         ^^^^^^^^^^^ help: add `return` as shown: `return Self::new()`
+   |
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#implicit_return
+
+error: could not compile `db` due to 59 previous errors

@@ -1,7 +1,7 @@
 use super::types::{FunctionEnvironment, InternalType};
-use std::collections::BTreeMap;
+use std::collections::HashMap;
 
-pub(crate) fn builtins<'a>() -> [(String, Vec<InternalType<'a>>); 7] {
+pub(crate) fn builtins() -> [(String, Vec<InternalType>); 7] {
     [
         (
             String::from("put"),
@@ -34,16 +34,15 @@ pub(crate) fn builtins<'a>() -> [(String, Vec<InternalType<'a>>); 7] {
     ]
 }
 
-// TODO: Storing and retrieving functions from an `Environment`
 #[derive(Debug)]
-pub struct Environment<'a> {
-    env: FunctionEnvironment<'a>,
+pub struct Environment {
+    pub env: FunctionEnvironment,
 }
 
-impl Environment<'_> {
-    pub fn new<const N: usize>(functions: [(String, Vec<InternalType<'_>>); N]) -> Environment {
+impl Environment {
+    pub fn new<const N: usize>(functions: [(String, Vec<InternalType>); N]) -> Environment {
         Environment {
-            env: BTreeMap::from(functions),
+            env: HashMap::from(functions),
         }
     }
 
@@ -75,22 +74,30 @@ impl Environment<'_> {
         }
     }
 
-    pub fn function_type_of<'a>(&'a self, name: &'a str) -> Option<InternalType> {
+    pub fn function_type_of(&self, name: &str) -> Option<InternalType> {
         match (self.param_types_of(name), self.return_type_of(name)) {
-            (t, Some(r)) => Some(InternalType::Application(name, t, Box::new(r))),
+            (t, Some(r)) => Some(InternalType::Application(
+                name.into(),
+                t,
+                Box::new(r.to_owned()),
+            )),
             _ => None,
         }
     }
 
-    pub fn is_builtin<'a>(&'a self, name: &'a str) -> bool {
+    pub fn is_builtin(&self, name: &str) -> bool {
         Environment::default().is_defined(name)
+    }
+
+    pub fn define(&mut self, name: String, typ: Vec<InternalType>) {
+        self.env.insert(name, typ);
     }
 }
 
-impl Default for Environment<'_> {
+impl Default for Environment {
     fn default() -> Self {
         Environment {
-            env: BTreeMap::from(builtins()),
+            env: HashMap::from(builtins()),
         }
     }
 }

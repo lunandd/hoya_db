@@ -1,2 +1,3 @@
+mod env;
 pub mod interpret;
-pub mod types;
+mod types;

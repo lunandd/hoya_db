@@ -1,4 +1,4 @@
-use crate::parser::ast::Expr;
+use crate::parser::ast::Ast;
 use combine::error::ParseError;
 use combine::parser::char::{char, digit, letter, spaces, string, tab};
 use combine::parser::EasyParser;
@@ -8,7 +8,7 @@ use combine::{
 };
 
 pub type EasyStreamError<'a> = combine::easy::Errors<char, &'a str, position::SourcePosition>;
-pub type EasyStreamOk<'a> = (Expr, position::Stream<&'a str, position::SourcePosition>);
+pub type EasyStreamOk<'a> = (Ast, position::Stream<&'a str, position::SourcePosition>);
 pub type ParserResult<'a> = Result<EasyStreamOk<'a>, EasyStreamError<'a>>;
 
 fn whitespace<Input>() -> impl Parser<Input>
@@ -29,13 +29,13 @@ where
     char(c).skip(skip_spaces())
 }
 
-fn int<Input>() -> impl Parser<Input, Output = Expr>
+fn int<Input>() -> impl Parser<Input, Output = Ast>
 where
     Input: Stream<Token = char>,
     Input::Error: ParseError<Input::Token, Input::Range, Input::Position>,
 {
     (optional(char('-')), many1(digit())).map(|(sign, digits): (Option<char>, String)| {
-        Expr::Number(if sign.is_some() {
+        Ast::Number(if sign.is_some() {
             -digits.parse::<isize>().unwrap()
         } else {
             digits.parse::<isize>().unwrap()
@@ -43,7 +43,7 @@ where
     })
 }
 
-fn float<Input>() -> impl Parser<Input, Output = Expr>
+fn float<Input>() -> impl Parser<Input, Output = Ast>
 where
     Input: Stream<Token = char>,
     Input::Error: ParseError<Input::Token, Input::Range, Input::Position>,
@@ -56,7 +56,7 @@ where
     )
         .map(
             |(sign, first, _, second): (Option<char>, String, char, String)| {
-                Expr::Float(if sign.is_some() {
+                Ast::Float(if sign.is_some() {
                     -format!("{first}.{second}").parse::<f64>().unwrap()
                 } else {
                     format!("{first}.{second}").parse::<f64>().unwrap()
@@ -65,17 +65,17 @@ where
         )
 }
 
-fn bool<Input>() -> impl Parser<Input, Output = Expr>
+fn bool<Input>() -> impl Parser<Input, Output = Ast>
 where
     Input: Stream<Token = char>,
     Input::Error: ParseError<Input::Token, Input::Range, Input::Position>,
 {
     string("true")
         .or(string("false"))
-        .map(|chosen| Expr::Boolean(chosen == "true"))
+        .map(|chosen| Ast::Boolean(chosen == "true"))
 }
 
-fn text<Input>() -> impl Parser<Input, Output = Expr>
+fn text<Input>() -> impl Parser<Input, Output = Ast>
 where
     Input: Stream<Token = char>,
     Input::Error: ParseError<Input::Token, Input::Range, Input::Position>,
@@ -85,43 +85,51 @@ where
         token('\"'),
         many1(satisfy(|c| c != '"' && c != '\'')),
     )
-    .map(Expr::Text)
+    .map(Ast::Text)
 }
 
-fn list_<Input>() -> impl Parser<Input, Output = Expr>
+fn list_<Input>() -> impl Parser<Input, Output = Ast>
 where
     Input: Stream<Token = char>,
     Input::Error: ParseError<Input::Token, Input::Range, Input::Position>,
 {
     let comma_list = sep_by(expr(), whitespace());
 
-    between(lex_char('['), lex_char(']'), comma_list).map(Expr::List)
+    between(lex_char('['), lex_char(']'), comma_list).map(Ast::List)
 }
 
-fn name<Input>() -> impl Parser<Input, Output = Expr>
+fn name_str<Input>() -> impl Parser<Input, Output = String>
 where
     Input: Stream<Token = char>,
     Input::Error: ParseError<Input::Token, Input::Range, Input::Position>,
 {
-    many1(letter().or(digit())).map(Expr::Identifier)
+    many1(letter().or(digit())).map(|a| a)
+}
+
+fn name<Input>() -> impl Parser<Input, Output = Ast>
+where
+    Input: Stream<Token = char>,
+    Input::Error: ParseError<Input::Token, Input::Range, Input::Position>,
+{
+    name_str().map(Ast::Identifier)
 }
 
 // Syntactic sugar
-fn atom<Input>() -> impl Parser<Input, Output = Expr>
+fn atom<Input>() -> impl Parser<Input, Output = Ast>
 where
     Input: Stream<Token = char>,
     Input::Error: ParseError<Input::Token, Input::Range, Input::Position>,
 {
     (lex_char('\''), name()).map(|(_, at)| {
-        if let Expr::Identifier(iden) = at {
-            Expr::Text(iden.to_uppercase())
+        if let Ast::Identifier(iden) = at {
+            Ast::Text(iden.to_uppercase())
         } else {
             unreachable!()
         }
     })
 }
 
-fn identifier<Input>() -> impl Parser<Input, Output = Expr>
+fn identifier<Input>() -> impl Parser<Input, Output = Ast>
 where
     Input: Stream<Token = char>,
     Input::Error: ParseError<Input::Token, Input::Range, Input::Position>,
@@ -129,7 +137,7 @@ where
     (lex_char('('), name(), lex_char(')')).map(|(_, n, _)| n)
 }
 
-fn call<Input>() -> impl Parser<Input, Output = Expr>
+fn call<Input>() -> impl Parser<Input, Output = Ast>
 where
     Input: Stream<Token = char>,
     Input::Error: ParseError<Input::Token, Input::Range, Input::Position>,
@@ -143,23 +151,32 @@ where
         expr_list,
         lex_char(')'),
     )
-        .map(|(_, name, _, args, _)| Expr::Call(Box::new(name), args))
+        .map(|(_, name, _, args, _)| Ast::Call(Box::new(name), args))
 }
 
-fn unit<Input>() -> impl Parser<Input, Output = Expr>
+fn unit<Input>() -> impl Parser<Input, Output = Ast>
 where
     Input: Stream<Token = char>,
     Input::Error: ParseError<Input::Token, Input::Range, Input::Position>,
 {
-    (lex_char('('), lex_char(')')).map(|_| Expr::Unit(()))
+    (lex_char('('), lex_char(')')).map(|_| Ast::Unit(()))
+}
+
+fn definition<Input>() -> impl Parser<Input, Output = Ast>
+where
+    Input: Stream<Token = char>,
+    Input::Error: ParseError<Input::Token, Input::Range, Input::Position>,
+{
+    // FIX: Not implemented yet
+    whitespace().map(|_| Ast::Unit(()))
 }
 
 pub fn parse(code: &str) -> ParserResult {
-    expr().easy_parse(position::Stream::new(code))
+    ast().easy_parse(position::Stream::new(code))
 }
 
 parser! {
-    pub fn list[Input]()(Input) -> Expr
+    pub fn list[Input]()(Input) -> Ast
     where [Input: Stream<Token = char>]
     {
         list_()
@@ -167,9 +184,25 @@ parser! {
 }
 
 parser! {
-    pub fn expr[Input]()(Input) -> Expr
+    pub fn expr[Input]()(Input) -> Ast
     where [Input: Stream<Token = char>]
     {
         choice!(attempt(bool()), attempt(float()), attempt(int()), attempt(text()), attempt(list()), attempt(call()), attempt(atom()), attempt(identifier()), attempt(unit()))
+    }
+}
+
+parser! {
+    pub fn stmt[Input]()(Input) -> Ast
+    where [Input: Stream<Token = char>]
+    {
+        choice!(attempt(definition()))
+    }
+}
+
+parser! {
+    pub fn ast[Input]()(Input) -> Ast
+    where [Input: Stream<Token = char>]
+    {
+        choice!(attempt(expr()), attempt(stmt()))
     }
 }

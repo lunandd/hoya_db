@@ -1,11 +1,12 @@
-use std::{collections::BTreeMap, fmt::Display};
+use std::collections::HashMap;
+use std::fmt::Display;
 
 use std::fmt;
 
-pub(crate) type FunctionEnvironment<'a> = BTreeMap<String, Vec<InternalType<'a>>>;
+pub(crate) type FunctionEnvironment = HashMap<String, Vec<InternalType>>;
 
 #[derive(Debug, Clone)]
-pub enum InternalType<'a> {
+pub enum InternalType {
     Number,
     Float,
     Boolean,
@@ -13,16 +14,16 @@ pub enum InternalType<'a> {
     List,
     Any,
     Unit,
-    Application(&'a str, Vec<InternalType<'a>>, Box<&'a InternalType<'a>>),
+    Application(String, Vec<InternalType>, Box<InternalType>),
 }
 
-impl Default for InternalType<'_> {
+impl Default for InternalType {
     fn default() -> Self {
         Self::Any
     }
 }
 
-impl Display for InternalType<'_> {
+impl Display for InternalType {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
             InternalType::Number => write!(f, "Number"),
@@ -37,7 +38,7 @@ impl Display for InternalType<'_> {
     }
 }
 
-impl<'a> PartialEq for InternalType<'a> {
+impl PartialEq for InternalType {
     fn eq(&self, other: &Self) -> bool {
         use InternalType::*;
         match (self, other) {
@@ -55,8 +56,8 @@ impl<'a> PartialEq for InternalType<'a> {
         }
     }
 }
-impl<'a> From<&'a InternalType<'a>> for InternalType<'a> {
-    fn from<'b>(l: &'b InternalType) -> InternalType<'b> {
+impl From<&InternalType> for InternalType {
+    fn from(l: &InternalType) -> InternalType {
         match l {
             InternalType::Number => InternalType::Number,
             InternalType::Float => InternalType::Float,
@@ -66,7 +67,7 @@ impl<'a> From<&'a InternalType<'a>> for InternalType<'a> {
             InternalType::Any => InternalType::Any,
             InternalType::Unit => InternalType::Unit,
             InternalType::Application(name, args, ret) => {
-                InternalType::Application(name, args.to_owned(), ret.to_owned())
+                InternalType::Application(name.to_string(), args.to_owned(), ret.to_owned())
             }
         }
     }

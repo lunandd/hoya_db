@@ -2,7 +2,7 @@ use std::rc::Rc;
 
 use db::DBTypes;
 
-use crate::parser::ast::Expr;
+use crate::parser::ast::Ast;
 
 #[derive(Debug, Clone)]
 pub enum InterpreterValue {
@@ -16,20 +16,20 @@ pub enum InterpreterValue {
     Unit(Rc<()>),
 }
 
-impl From<Expr> for InterpreterValue {
-    fn from(e: Expr) -> Self {
+impl From<Ast> for InterpreterValue {
+    fn from(e: Ast) -> Self {
         match e {
-            Expr::Text(t) => Self::Text(Rc::new(t)),
-            Expr::List(l) => Self::List(Rc::new(l.into_iter().map(|e| e.into()).collect())),
-            Expr::Call(n, a) => Self::Call(
+            Ast::Text(t) => Self::Text(Rc::new(t)),
+            Ast::List(l) => Self::List(Rc::new(l.into_iter().map(|e| e.into()).collect())),
+            Ast::Call(n, a) => Self::Call(
                 Rc::new(InterpreterValue::from(*n)),
                 Rc::new(a.into_iter().map(|e| e.into()).collect()),
             ),
-            Expr::Float(f) => Self::Float(Rc::new(f)),
-            Expr::Number(n) => Self::Number(Rc::new(n)),
-            Expr::Identifier(i) => Self::Identifier(Rc::new(i)),
-            Expr::Boolean(b) => Self::Boolean(Rc::new(b)),
-            Expr::Unit(()) => Self::Unit(Rc::new(())),
+            Ast::Float(f) => Self::Float(Rc::new(f)),
+            Ast::Number(n) => Self::Number(Rc::new(n)),
+            Ast::Identifier(i) => Self::Identifier(Rc::new(i)),
+            Ast::Boolean(b) => Self::Boolean(Rc::new(b)),
+            Ast::Unit(()) => Self::Unit(Rc::new(())),
         }
     }
 }
