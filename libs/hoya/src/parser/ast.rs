@@ -1,13 +1,13 @@
 #[derive(Debug, Clone)]
-pub enum Expr {
+pub enum Ast {
+    // Expressions
     Number(isize),
     Float(f64),
     Boolean(bool),
     Text(String),
-    List(Vec<Expr>),
+    List(Vec<Ast>),
     Identifier(String),
-    Call(Box<Expr>, Vec<Expr>),
+    Call(Box<Ast>, Vec<Ast>),
     Unit(()),
+    // Statements
 }
-
-// TODO: Function definitions, if statements, variable arguments, quoting, comments
