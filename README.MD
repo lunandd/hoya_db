@@ -4,7 +4,7 @@
 ![GitHub Repo stars](https://img.shields.io/github/stars/lunandd/hoya_db)
 ![GitHub watchers](https://img.shields.io/github/watchers/lunandd/hoya_db)
 ![GitHub issues](https://img.shields.io/github/issues/lunandd/hoya_db)
-![Lines of Code](https://tokei.rs/b1/github/Pavlos-Efstathiou/firework_lang)
+![Lines of Code](https://tokei.rs/b1/github/lunandd/hoya_db)
 [![License](https://img.shields.io/badge/License-BSD_3--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause)
 
 HoyaDB is a simple in-memory key-value store database written in Rust.
