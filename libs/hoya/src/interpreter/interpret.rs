@@ -90,7 +90,14 @@ impl Interpreter<'_> {
                             self.db.exists(&self.text_expr_to_string(&args[0])),
                         )),
                         "remove" => self.db.remove(&self.text_expr_to_string(&args[0])).into(),
-                        "store" => todo!(),
+                        "store" => match self.db.store(&self.text_expr_to_string(&args[0])) {
+                            Ok(_) => InterpreterValue::Unit(Rc::new(())),
+                            Err(e) => InterpreterValue::Text(Rc::new(format!("{}", e))),
+                        },
+                        "load" => match self.db.load(&self.text_expr_to_string(&args[0])) {
+                            Ok(_) => InterpreterValue::Unit(Rc::new(())),
+                            Err(e) => InterpreterValue::Text(Rc::new(format!("{}", e))),
+                        },
                         _ => todo!(),
                     }
                 } else {
@@ -119,7 +126,6 @@ impl Interpreter<'_> {
 
         if let Ok(parsed) = parser_result {
             let checked = self.typechecker.check(&InternalType::Any, parsed);
-            println!("{:#?}", parsed);
 
             match checked {
                 Ok(_) => {

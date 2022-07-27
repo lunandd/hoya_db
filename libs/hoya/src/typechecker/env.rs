@@ -1,7 +1,7 @@
 use super::types::{FunctionEnvironment, InternalType};
 use std::collections::BTreeMap;
 
-pub(crate) fn builtins<'a>() -> [(String, Vec<InternalType<'a>>); 7] {
+pub(crate) fn builtins<'a>() -> [(String, Vec<InternalType<'a>>); 8] {
     [
         (
             String::from("put"),
@@ -21,6 +21,10 @@ pub(crate) fn builtins<'a>() -> [(String, Vec<InternalType<'a>>); 7] {
         ),
         (
             String::from("store"),
+            vec![InternalType::Text, InternalType::Unit],
+        ),
+        (
+            String::from("load"),
             vec![InternalType::Text, InternalType::Unit],
         ),
         (
