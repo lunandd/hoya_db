@@ -24,4 +24,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - List elements are now separated by whitespace rather than commas
 - Changed the return type of the `hoya::parser::parser::parse` function to `ParserResult`
 
+## [0.2.0] - 2022-07-27
+### Added
+- `store` function in the `Database` struct
+- `load` function in the `Database` struct
+- `store` function in the Interpreter
+- `load` function in the Interpreter
+
 [0.1.0]: https://github.com/lunandd/hoya_db/commit/34959951221155102d86ef2115c6ce9f55efcdf3

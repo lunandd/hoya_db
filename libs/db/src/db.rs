@@ -1,7 +1,11 @@
+use serde::{Deserialize, Serialize};
 use std::collections::BTreeMap;
+use std::error::Error;
+use std::fs::{self, OpenOptions};
+use std::io::Write;
 use std::sync::{Arc, RwLock};
 
-#[derive(Debug, PartialEq, Clone)]
+#[derive(Serialize, Deserialize, Debug, PartialEq, Clone)]
 pub enum DBTypes {
     Number(isize),
     Float(f64),
@@ -45,14 +49,25 @@ impl Database {
         self.records.read().unwrap().contains_key(key)
     }
 
-    // TODO: Storing the database in a file
-    pub fn store(&self, _filename: &str) {
-        todo!()
+    pub fn store(&self, filename: &str) -> Result<(), Box<dyn Error>> {
+        let serialized_records = bincode::serialize(&*self.records.read().unwrap())?;
+        let mut file = OpenOptions::new()
+            .write(true)
+            .create(true)
+            .open(filename.to_owned() + ".hoya")?;
+
+        file.write_all(&serialized_records)?;
+
+        Ok(())
     }
 
-    // TODO: Loading the database from a file
-    pub fn load(&self, _filename: &str) {
-        todo!()
+    pub fn load(&self, filename: &str) -> Result<(), Box<dyn Error>> {
+        let records = fs::read(filename.to_owned() + ".hoya")?;
+        let tree = bincode::deserialize::<Collection>(&records)?;
+
+        let mut old_db = self.records.write().unwrap();
+        *old_db = tree;
+        Ok(())
     }
 }
 
