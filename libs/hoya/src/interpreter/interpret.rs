@@ -7,32 +7,22 @@ use db::{DBTypes, Database};
 
 use super::types::InterpreterValue;
 use crate::parser::parse;
-use crate::typechecker::bidirectional_typechecker::Typechecker;
 use crate::typechecker::types::InternalType;
-use crate::{parser::ast::Expr, typechecker::env::Environment};
+use crate::{interpreter::env::Environment, parser::ast::Ast};
 
-pub struct Interpreter<'a> {
-    typechecker: Typechecker<'a>,
-    env: Environment<'a>,
+pub struct Interpreter {
+    env: Environment,
     db: Database,
 }
 
-impl Interpreter<'_> {
-    pub fn new<'a>(
-        db: Database,
-        env: Environment<'a>,
-        typechecker: Typechecker<'a>,
-    ) -> Interpreter<'a> {
-        Interpreter {
-            typechecker,
-            env,
-            db,
-        }
+impl Interpreter {
+    pub fn new(db: Database, env: Environment) -> Interpreter {
+        Interpreter { env, db }
     }
 
-    fn text_expr_to_string(&self, expr: &Expr) -> String {
-        match expr {
-            Expr::Text(t) => t.to_string(),
+    fn text_ast_to_string(&self, ast: &Ast) -> String {
+        match ast {
+            Ast::Text(t) => t.to_string(),
             _ => unreachable!(),
         }
     }
@@ -57,15 +47,15 @@ impl Interpreter<'_> {
         }
     }
 
-    fn eval_builtin(&self, expr: &Expr) -> InterpreterValue {
-        match expr {
-            Expr::Call(name, args) => {
-                if let Expr::Identifier(identifier) = &**name {
+    fn eval_builtin(&self, ast: &Ast) -> InterpreterValue {
+        match ast {
+            Ast::Call(name, args) => {
+                if let Ast::Identifier(identifier) = &**name {
                     match &identifier[..] {
                         "write" => {
                             let mut stdout = io::stdout();
                             stdout
-                                .write_all(self.stringify(&self.eval_expr(&args[0])).as_bytes())
+                                .write_all(self.stringify(&self.eval_ast(&args[0])).as_bytes())
                                 .unwrap();
                             InterpreterValue::Unit(Rc::new(()))
                         }
@@ -73,7 +63,7 @@ impl Interpreter<'_> {
                             let mut stdout = io::stdout();
                             stdout
                                 .write_all(
-                                    (self.stringify(&self.eval_expr(&args[0])) + "\n").as_bytes(),
+                                    (self.stringify(&self.eval_ast(&args[0])) + "\n").as_bytes(),
                                 )
                                 .unwrap();
                             InterpreterValue::Unit(Rc::new(()))
@@ -81,15 +71,15 @@ impl Interpreter<'_> {
                         "put" => self
                             .db
                             .put(
-                                self.text_expr_to_string(&args[1]),
-                                DBTypes::from(self.eval_expr(&args[0])),
+                                self.text_ast_to_string(&args[1]),
+                                DBTypes::from(self.eval_ast(&args[0])),
                             )
                             .into(),
-                        "get" => self.db.get(&self.text_expr_to_string(&args[0])).into(),
+                        "get" => self.db.get(&self.text_ast_to_string(&args[0])).into(),
                         "exists" => InterpreterValue::Boolean(Rc::new(
-                            self.db.exists(&self.text_expr_to_string(&args[0])),
+                            self.db.exists(&self.text_ast_to_string(&args[0])),
                         )),
-                        "remove" => self.db.remove(&self.text_expr_to_string(&args[0])).into(),
+                        "remove" => self.db.remove(&self.text_ast_to_string(&args[0])).into(),
                         "store" => todo!(),
                         _ => todo!(),
                     }
@@ -101,14 +91,14 @@ impl Interpreter<'_> {
         }
     }
 
-    pub fn eval_expr(&self, expr: &Expr) -> InterpreterValue {
-        match expr {
-            Expr::Identifier(..) => todo!("No definable functions yet"),
-            Expr::Call(..) => {
+    pub fn eval_ast(&self, ast: &Ast) -> InterpreterValue {
+        match ast {
+            Ast::Identifier(..) => todo!("No definable functions yet"),
+            Ast::Call(..) => {
                 // Temporarily calling eval_builtin until I implement the def statement
                 // Example: (def greet (name: Text) -> Text
                 //              (writeln (concat "Hello " name "!")))
-                self.eval_builtin(expr)
+                self.eval_builtin(ast)
             }
             e => e.to_owned().into(),
         }
@@ -118,12 +108,11 @@ impl Interpreter<'_> {
         let parser_result = &parse(code).map(|x| x.0);
 
         if let Ok(parsed) = parser_result {
-            let checked = self.typechecker.check(&InternalType::Any, parsed);
-            println!("{:#?}", parsed);
+            let checked = self.env.typechecker.check(&InternalType::Any, parsed);
 
             match checked {
                 Ok(_) => {
-                    println!("{}", self.stringify(&self.eval_expr(parsed)));
+                    println!("{}", self.stringify(&self.eval_ast(parsed)));
                 }
                 Err(ref e) => {
                     Report::build(ReportKind::Error, (), 1)
@@ -157,10 +146,9 @@ impl Interpreter<'_> {
     }
 }
 
-impl Default for Interpreter<'_> {
+impl Default for Interpreter {
     fn default() -> Self {
         Self {
-            typechecker: Typechecker::new(Environment::builtin()),
             env: Environment::builtin(),
             db: Database::default(),
         }

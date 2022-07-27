@@ -3,39 +3,39 @@ use thiserror::Error;
 use super::types::InternalType;
 
 #[derive(Error, Debug)]
-pub enum TypeCheckerError<'a> {
+pub enum TypeCheckerError {
     #[error("Function `{0}` does not exist")]
     FunctionNotFound(String),
     #[error("Expected type {expected}, but found {found}")]
     InvalidTypeFound {
-        expected: InternalType<'a>,
-        found: InternalType<'a>,
+        expected: InternalType,
+        found: InternalType,
     },
     #[error("Expected types {expected:?}, but found {found:?}")]
     InvalidTypesFound {
-        expected: Vec<InternalType<'a>>,
-        found: Vec<InternalType<'a>>,
+        expected: Vec<InternalType>,
+        found: Vec<InternalType>,
     },
 }
 
 #[derive(Error, Debug)]
-pub enum ShortTypeCheckerError<'a> {
+pub enum ShortTypeCheckerError {
     #[error("Function `{0}` not found")]
     FunctionNotFound(String),
     #[error("Invalid Type `{found}` Found")]
     InvalidTypeFound {
-        expected: InternalType<'a>,
-        found: InternalType<'a>,
+        expected: InternalType,
+        found: InternalType,
     },
     #[error("Invalid Types Found")]
     InvalidTypesFound {
-        expected: Vec<InternalType<'a>>,
-        found: Vec<InternalType<'a>>,
+        expected: Vec<InternalType>,
+        found: Vec<InternalType>,
     },
 }
 
-impl ShortTypeCheckerError<'_> {
-    pub fn to_long_error(&'_ self) -> TypeCheckerError<'_> {
+impl ShortTypeCheckerError {
+    pub fn to_long_error(&'_ self) -> TypeCheckerError {
         match self {
             Self::FunctionNotFound(f) => TypeCheckerError::FunctionNotFound(f.to_string()),
             Self::InvalidTypeFound { expected, found } => TypeCheckerError::InvalidTypeFound {
@@ -50,8 +50,8 @@ impl ShortTypeCheckerError<'_> {
     }
 }
 
-impl TypeCheckerError<'_> {
-    pub fn to_short_error(&'_ self) -> ShortTypeCheckerError<'_> {
+impl TypeCheckerError {
+    pub fn to_short_error(&'_ self) -> ShortTypeCheckerError {
         match self {
             Self::FunctionNotFound(f) => ShortTypeCheckerError::FunctionNotFound(f.to_string()),
             Self::InvalidTypeFound { expected, found } => ShortTypeCheckerError::InvalidTypeFound {
