@@ -3,7 +3,7 @@ use rustyline::error::ReadlineError;
 use rustyline::{Editor, Result};
 
 fn main() -> Result<()> {
-    let mut rl = Editor::<()>::new();
+    let mut rl = Editor::<()>::new()?;
     rl.load_history("history.txt")?;
 
     let interpreter = Interpreter::default();
