@@ -14,7 +14,10 @@ impl Typechecker<'_> {
         Typechecker { env }
     }
 
-    pub fn synthesize<'a>(&'a self, ast: &'a Expr) -> Result<InternalType, TypeCheckerError> {
+    fn single_result_synthesize<'a>(
+        &'a self,
+        ast: &'a Expr,
+    ) -> Result<InternalType, TypeCheckerError> {
         match ast {
             Expr::Text(_) => Ok(InternalType::Text),
             Expr::List(_) => Ok(InternalType::List),
@@ -29,27 +32,56 @@ impl Typechecker<'_> {
                     Err(TypeCheckerError::FunctionNotFound(name.into()))
                 }
             }
+            _ => unreachable!(),
+        }
+    }
+
+    pub fn synthesize<'a>(&'a self, ast: &'a Expr) -> Result<InternalType, Vec<TypeCheckerError>> {
+        match ast {
             Expr::Call(name, args) => {
                 let str_name = match &**name {
                     Expr::Identifier(f) => f,
                     _ => unreachable!(),
                 };
                 if let Some(ret) = self.env.return_type_of(str_name) {
-                    /* TODO: Check if synthesized results are Ok
-                    i.e when ```(put a "a")``` is executed on the default Environment
-                    it fails because a is not defined. Basically return
-                    a ```Vector``` instead of just a ```Result```*/
-                    Ok(InternalType::Application(
-                        str_name,
-                        args.iter()
-                            .map(|e| self.synthesize(e).unwrap())
-                            .collect::<Vec<_>>(),
-                        Box::new(ret),
-                    ))
+                    let application_args =
+                        args.iter().map(|e| self.synthesize(e)).collect::<Vec<_>>();
+
+                    let contains_errors = application_args
+                        .iter()
+                        .map(|arg| arg.is_err())
+                        .all(|arg| arg);
+
+                    if !contains_errors {
+                        Ok(InternalType::Application(
+                            str_name,
+                            application_args
+                                .into_iter()
+                                .map(|arg| arg.unwrap())
+                                .collect::<Vec<_>>(),
+                            Box::new(ret),
+                        ))
+                    } else {
+                        Err(application_args
+                            .into_iter()
+                            .map(|arg| match arg {
+                                Err(e) => e,
+                                _ => unreachable!(),
+                            })
+                            .collect::<Vec<_>>()
+                            .into_iter()
+                            .flatten()
+                            .collect())
+                    }
                 } else {
-                    Err(TypeCheckerError::FunctionNotFound(str_name.to_string()))
+                    Err(vec![TypeCheckerError::FunctionNotFound(
+                        str_name.to_string(),
+                    )])
                 }
             }
+            single_res => self
+                .single_result_synthesize(single_res)
+                .map_err(|err| vec![err]),
         }
     }
 
@@ -57,7 +89,7 @@ impl Typechecker<'_> {
         &'a self,
         expected: &'a InternalType,
         ast: &'a Expr,
-    ) -> Result<(), TypeCheckerError> {
+    ) -> Result<(), Vec<TypeCheckerError>> {
         let synthesized = self.synthesize(ast);
         match synthesized {
             Ok(internal_type) => match internal_type {
@@ -67,20 +99,20 @@ impl Typechecker<'_> {
                     if expected == *arg_types {
                         Ok(())
                     } else {
-                        Err(TypeCheckerError::InvalidTypesFound {
+                        Err(vec![TypeCheckerError::InvalidTypesFound {
                             expected,
                             found: arg_types.to_owned(),
-                        })
+                        }])
                     }
                 }
                 found => {
                     if &found == expected {
                         Ok(())
                     } else {
-                        Err(TypeCheckerError::InvalidTypeFound {
+                        Err(vec![TypeCheckerError::InvalidTypeFound {
                             expected: expected.into(),
                             found,
-                        })
+                        }])
                     }
                 }
             },

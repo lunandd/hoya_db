@@ -14,11 +14,11 @@ HoyaDB is a simple in-memory key-value store database written in Rust.
 - [x] Basic implementation of a Database
 - [x] Basic parser
 - [x] Basic typechecker
-- [x] Multithreading (kinda)
+- [x] Multithreaded database access
 
 ## Roadrap
 - [x] Interpreter
-- [ ] Writing the databases' contents to a file
+- [x] Writing the databases' contents to a file and loading it
 - [ ] [Quoting](https://www.gnu.org/software/emacs/manual/html_node/elisp/Quoting.html)
 - [ ] Binary Operations (Addition, Subtraction, Division, Multiplication, etc)
 - [ ] Better error handling
