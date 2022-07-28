@@ -1,5 +1,5 @@
 [package]
-version = "0.2.0"
+version = "1.2.0-dev"
 name = "hoya_db"
 authors = ["lunand"]
 edition = "2021"

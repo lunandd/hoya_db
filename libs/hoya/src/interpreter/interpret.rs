@@ -131,15 +131,15 @@ impl Interpreter<'_> {
                 Ok(_) => {
                     println!("{}", self.stringify(&self.eval_expr(parsed)));
                 }
-                Err(ref e) => {
+                Err(errors) => errors.into_iter().for_each(|e| {
                     Report::build(ReportKind::Error, (), 1)
                         .with_message(e.to_short_error().to_string())
                         .with_label(Label::new(0..1))
                         .with_label(Label::new(0..1).with_message(format!("{e}")))
                         .finish()
                         .print(Source::from(code))
-                        .unwrap();
-                }
+                        .unwrap()
+                }),
             }
         } else {
             let err = match parser_result {
